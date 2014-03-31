@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+	<title>Demonstration for Pie Chart</title>
+	<script type="text/javascript" src="jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../PieChart.js"></script>
+	<link rel="stylesheet" href="../PieChart.css" />
+	<style type="text/css">
+		#target {
+			width: 600px;
+			height: 600px;
+		}
+	</style>
+</head>
+<body>
+	<ul id="source">
+		<li class="pieChart" value="220">Red: 220</li>
+		<li class="pieChart" value="550">Blue: 550</li>
+		<li class="pieChart" value="105">Green: 105</li>
+	</ul>
+	<div id="target">
+	</div>
+
+<script type="text/javascript">
+	$(function() {
+		$('#source').pieChart('#target');
+	});
+</script>
+
+</body>
+</html>

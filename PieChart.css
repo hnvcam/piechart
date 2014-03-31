@@ -1,0 +1,16 @@
+.pieChart {
+	stroke: black;
+	stroke-width: 2;
+}
+
+.pie0 {
+	fill: red;
+}
+
+.pie1 {
+	fill: blue;
+}
+
+.pie2 {
+	fill: green;
+}
