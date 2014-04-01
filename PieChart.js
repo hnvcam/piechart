@@ -1,9 +1,9 @@
 /**
- * Table Bar Chart jQuery plugin 1.0
+ * Pie Chart jQuery plugin 1.0
  * 
  * Copyright (c) 2014, AIWSolutions
  * License: GPL2
- * Project Website: http://wiki.aiwsolutions.net/Snld9
+ * Project Website: http://wiki.aiwsolutions.net/UKKd5
  **/
 
 // String.format
@@ -22,26 +22,37 @@ if (!String.prototype.format) {
 	};
 }
 
-jQuery.fn.pieChart = function(targetDiv) {
+jQuery.fn.pieChart = function(targetDiv, title) {
 	var SVGNS = "http://www.w3.org/2000/svg";
 	var MOVETO = 'M {0} {1} ';
 	var LINETO = 'L {0} {1} ';
 	var ARC = 'A {0} {1} {2} {3} {4} {5} {6} ';
 	var source = $(this);
 	var target = $(targetDiv);
-	var svgWidth = target.width();
-	var svgHeight = target.height();
-	var raise = 10;
-	var centerX = svgWidth / 2;
-	var centerY = svgHeight / 2;
-	var radius = svgWidth / 2 - raise;
 	var data = [];
 	var totalValue = 0;
+	var chart;
+	var svgWidth;
+	var svgHeight;
+	var centerX;
+	var centerY;
+	var pieRadius;
+	var raiseLevel = 10;	
 	
 	function setSVGAttribute(element, attribute, value) {
 		if (element !== undefined && attribute !== undefined && value !== undefined) {
 			element.setAttributeNS(null, attribute, value);
 		}
+	}
+	
+	function svgText(text, index, x, y, className) {
+		var item = document.createElementNS(SVGNS, 'text');
+		setSVGAttribute(item, 'index', index);
+		setSVGAttribute(item, 'x', x);
+		setSVGAttribute(item, 'y', y);
+		setSVGAttribute(item, 'class', className);
+		item.textContent = text;
+		return item;
 	}
 	
 	function svgPath(command, className) {
@@ -51,31 +62,13 @@ jQuery.fn.pieChart = function(targetDiv) {
 		return path;
 	}
 	
-	function registerAnimation(anim) {
-        var targets = getTargets(anim);
-        var elAnimators = new Array();
-        for(var i=0; i<targets.length ;i++) {
-          var target = targets[i];
-          var animator = new Animator(anim, target, i);
-          animators.push(animator);
-          elAnimators[i] = animator;
-        }
-        anim.animators = elAnimators;
-        var id = anim.getAttribute("id");
-        if (id)
-          id2anim[id] = anim;
-        for(var i=0; i<elAnimators.length ;i++)
-          elAnimators[i].register();
-	}
-	
-	function svgPieHighlight(pieElement, middleAngle) {
-		var animate = document.createElementNS(SVGNS, 'animateMotion');
-		setSVGAttribute(animate, 'path', MOVETO.format(0, 0) + 
-			LINETO.format(getPositionAtAngle(0, 0, raise, middleAngle)));
-		setSVGAttribute(animate, 'begin', '0s');
-		setSVGAttribute(animate, 'dur', '200ms');
-		setSVGAttribute(animate, 'fill', 'freeze');
-		pieElement.appendChild(animate);
+	function svgPieHighlight(element, raisen) {
+		var index = $(element).attr('index');
+		var pieElement = $('path.pie' + index)[0];
+		var textElement = $('text[index="' + index + '"]')[0];
+		var newPos = raisen ? getPositionAtAngle(0, 0, raiseLevel, pieElement.getAttribute('middleAngle')) : [0, 0];
+		pieElement.setAttribute('transform', 'translate(' + newPos[0] + ' ' + newPos[1] + ')');
+		textElement.setAttribute('transform', 'translate(' + newPos[0] + ' ' + newPos[1] + ')');		
 	}
 	
 	function readData() {
@@ -83,7 +76,8 @@ jQuery.fn.pieChart = function(targetDiv) {
 			var self = $(this);
 			var pie = {
 				'cssClass': self.attr('class'),
-				'value': self.attr('value')
+				'value': self.attr('value'),
+				'title': self.text()
 			};
 			data.push(pie);
 			totalValue = totalValue + parseFloat(self.attr('value'));
@@ -101,41 +95,82 @@ jQuery.fn.pieChart = function(targetDiv) {
 		return result;
 	}
 	
-	function getArcCMD(from, to) {
-		var cmd = MOVETO.format(getPositionAtAngle(centerX, centerY, radius, from));
-		var destination = getPositionAtAngle(centerX, centerY, radius, to);
+	function getArcCMD(x, y, radius, from, to) {
+		var cmd = MOVETO.format(getPositionAtAngle(x, y, radius, from));
+		var destination = getPositionAtAngle(x, y, radius, to);
 		var largeArcFlag = (to - from) > 180 ? 1 : 0;
 		cmd += ARC.format(radius, radius, 0, largeArcFlag, 1, destination[0], destination[1]);
-		cmd += LINETO.format(centerX, centerY);
+		cmd += LINETO.format(x, y);
 		cmd += 'Z';
 		return cmd;
 	}
 	
-	function render() {
-		var chart = document.createElementNS(SVGNS, 'svg');
-		setSVGAttribute(chart, 'width', svgWidth);
-		setSVGAttribute(chart, 'height', svgHeight);
+	function renderElements() {
+		if (title) {
+			target.append('<div class="caption">' + title + '</div>');
+		}
+		chart = document.createElementNS(SVGNS, 'svg');
 		target.append(chart);
 		
+		var legend = $('<ul class="legend"></ul>');
+		$(data).each(function(index) {
+			var legendItem = $('<li index="' + index + '"><span class="icon pie' + index + '"></span>' + this.title + 
+					'</li>');
+			legendItem.mouseenter(function() {
+				svgPieHighlight(this, true);
+			}).mouseleave(function() {
+				svgPieHighlight(this, false);
+			});
+			legend.append(legendItem);
+		});
+		target.append(legend);
+	}
+	
+	function calculateSize() {
+		svgWidth = target.width();
+		svgHeight = target.height() - $('.legend').height() - $('.caption').height() - 20;
+		setSVGAttribute(chart, 'width', svgWidth);
+		setSVGAttribute(chart, 'height', svgHeight);
+		
+		centerX = svgWidth / 2;
+		centerY = svgHeight / 2;
+		pieRadius = (svgWidth > svgHeight ? svgHeight : svgWidth) / 2 - raiseLevel;
+	}
+	
+	function renderChart() {
 		var count = 0;
 		var startAngle = 0;
 		$(data).each(function() {
 			var angle = startAngle + 3.6 * this.percentage;
-			var pie = svgPath(getArcCMD(startAngle, angle), this.cssClass + ' pie' + count);
+			var pie = svgPath(getArcCMD(centerX, centerY, pieRadius, startAngle, angle), this.cssClass + ' pie' + count);
 			var middleAngle = startAngle + 1.8 * this.percentage;
+			setSVGAttribute(pie, 'value', this.value);
+			setSVGAttribute(pie, 'middleAngle', middleAngle);
+			setSVGAttribute(pie, 'index', count);
 			$(pie).mouseenter(function() {
-				svgPieHighlight(pie, middleAngle);
+				svgPieHighlight(this, true);
 			});
 			$(pie).mouseleave(function() {
-				$(this).empty();
+				svgPieHighlight(this, false);
 			});
 			chart.appendChild(pie);
+			
+			var textPosition = getPositionAtAngle(centerX, centerY, pieRadius / 2, middleAngle);
+			chart.appendChild(svgText(Math.round(this.percentage * 100) / 100 + '%', count,
+						textPosition[0] - 20, textPosition[1], 'percentage'));
+						
+			
 			count++;
 			startAngle = angle;
 		});
 	}
 	
-	readData();
+	function render() {
+		readData();
+		renderElements();
+		calculateSize();
+		renderChart();
+	}
+	
 	render();
-	console.log(totalValue, data);
 }

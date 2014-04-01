@@ -1,3 +1,45 @@
+.caption {
+	display: block;
+	text-align: center;
+	font-weight: bold;
+	height: 40px;
+}
+
+.legend {
+   background: #f0f0f0;
+   border-radius: 4px;
+   bottom: 0;
+   position: relative;
+   text-align: left;
+   width: 100%;
+   margin: 0;
+}
+
+.legend li {
+   display: block;
+   float: left;
+   height: 20px;
+   margin: 0;
+   padding: 10px 20px;
+}
+
+.legend span.icon {
+   background-position: 50% 0;
+   border-radius: 2px;
+   display: block;
+   float: left;
+   height: 16px;
+   margin: 2px 10px 0 0;
+   width: 16px;
+}
+
+.percentage {
+	fill: white;
+	stroke: none;
+	font-size: 20px;
+	z-index: 100;
+}
+
 .pieChart {
 	stroke: black;
 	stroke-width: 2;
@@ -5,12 +47,20 @@
 
 .pie0 {
 	fill: red;
+	background-color: red;
 }
 
 .pie1 {
 	fill: blue;
+	background-color: blue;
 }
 
 .pie2 {
 	fill: green;
+	background-color: green;
+}
+
+.pie3 {
+	fill: yellow;
+	background-color: yellow;
 }

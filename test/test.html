@@ -1,29 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Demonstration for Pie Chart</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
 	<script type="text/javascript" src="jquery-1.11.0.min.js"></script>
 	<script type="text/javascript" src="../PieChart.js"></script>
 	<link rel="stylesheet" href="../PieChart.css" />
 	<style type="text/css">
 		#target {
-			width: 600px;
-			height: 600px;
+			width: 400px;
+			height: 400px;
+		}
+		table {
+			border-collapse: collapse;
+		}
+		th {
+			background: #A7C942;
+			border: 1px solid #98BF21;
+			color: #ffffff;
+			font-weight: bold;
+			text-align: left;
+		}
+		td {
+			border: 1px solid #98BF21;
+			text-align: left;
+			font-weight: normal;
+			color: #000000;
+		}
+		tr:nth-child(odd) {
+			background: #ffffff;
+		}
+		tbody tr:nth-child(odd) th {
+			background: #ffffff;
+			color: #000000;
+		}
+		tr:nth-child(even) {
+			background: #EAF2D3;
+		}
+		tbody tr:nth-child(even) th {
+			background: #EAF2D3;
+			color: #000000;
 		}
 	</style>
 </head>
 <body>
+
+<!--
 	<ul id="source">
-		<li class="pieChart" value="220">Red: 220</li>
-		<li class="pieChart" value="550">Blue: 550</li>
-		<li class="pieChart" value="105">Green: 105</li>
+		<li class="pieChart" value="220">Red</li>
+		<li class="pieChart" value="550">Blue</li>
+		<li class="pieChart" value="105">Green</li>
 	</ul>
+-->
+	
+	<table id="source">
+		<thead>
+			<tr>
+				<th>Type</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="pieChart" value="220">Red</td>
+				<td>220</td>
+			</tr>
+			<tr>
+				<td class="pieChart" value="550">Blue</td>
+				<td>550</td>
+			</tr>
+			<tr>
+				<td class="pieChart" value="105">Green</td>
+				<td>105</td>
+			</tr>
+			<tr>
+				<td class="pieChart" value="300">Yellow</td>
+				<td>300</td>
+			</tr>
+		</tbody>
+	</table>
+	
 	<div id="target">
 	</div>
 
 <script type="text/javascript">
 	$(function() {
-		$('#source').pieChart('#target');
+		$('#source').pieChart('#target', 'Sample Pie Chart');
 	});
 </script>
 
