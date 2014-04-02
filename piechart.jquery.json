@@ -1,0 +1,30 @@
+{
+	"name": "piechart",
+	"version": "1.0.0",
+	"title": "Pie Chart",
+	"author": { 
+		"name": "Cam Hoang",
+		"email": "hnvcam@gmail.com",
+		"url": "http://wiki.aiwsolutions.net"
+	},
+	"licenses": [
+		{
+			"type": "GPLv2",
+			"url": "http://www.example.com/licenses/gpl.html"
+		}
+	],
+	"dependencies": { 
+		"jquery": "1.x" 
+	},
+	"description": "Simple jQuery plugin to render pie chart from existing html tag. Very easy to use.",
+	"keywords": [
+		"pie", 
+		"chart",
+		"animation"
+	],
+	"homepage": "http://wiki.aiwsolutions.net/UKKd5",
+	"docs": "http://wiki.aiwsolutions.net/UKKd5",
+	"demo": "http://wiki.aiwsolutions.net/UKKd5",
+	"download": "https://github.com/hnvcam/piechart",
+	"bugs": "https://github.com/hnvcam/piechart/issues"
+}
